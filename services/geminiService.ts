@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import { ShowTheme } from "../types";
+import { ShowTheme } from "../types.ts";
 
 export const generateShowTheme = async (prompt: string): Promise<ShowTheme> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -20,22 +20,12 @@ export const generateShowTheme = async (prompt: string): Promise<ShowTheme> => {
             items: { type: Type.STRING },
             description: "Hex color codes (e.g. #FF0000) that fit the theme" 
           },
-          launchFrequency: { 
-            type: Type.NUMBER, 
-            description: "How often to launch (0.01 to 0.1)" 
-          },
-          particleCount: { 
-            type: Type.NUMBER, 
-            description: "Density of explosions (50 to 200)" 
-          },
-          particleSize: {
-            type: Type.NUMBER,
-            description: "Size of individual firework particles (0.5 to 5)"
-          },
+          launchFrequency: { type: Type.NUMBER },
+          particleCount: { type: Type.NUMBER },
+          particleSize: { type: Type.NUMBER },
           explosionType: { 
             type: Type.STRING, 
-            enum: ['standard', 'ring', 'heart', 'star'],
-            description: "Geometric pattern of the explosion" 
+            enum: ['standard', 'ring', 'heart', 'star']
           }
         },
         required: ["name", "description", "colors", "launchFrequency", "particleCount", "particleSize", "explosionType"]
@@ -46,7 +36,6 @@ export const generateShowTheme = async (prompt: string): Promise<ShowTheme> => {
   try {
     return JSON.parse(response.text);
   } catch (e) {
-    console.error("Failed to parse theme, using default", e);
     return {
       name: "Stellar Default",
       description: "A classic display of light and color.",

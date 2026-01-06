@@ -1,6 +1,6 @@
 
 import React, { useRef, useEffect, useCallback } from 'react';
-import { Particle, Firework, ShowTheme } from '../types';
+import { Particle, Firework, ShowTheme } from '../types.ts';
 
 interface FireworkEngineProps {
   theme: ShowTheme;
@@ -34,7 +34,6 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
         vx = Math.cos(angle) * random(2, 8);
         vy = Math.sin(angle) * random(2, 8);
       } else if (theme.explosionType === 'heart') {
-        // Simple heart shape formula
         const angle = (i / count) * Math.PI * 2;
         const speed = random(3, 5);
         vx = 16 * Math.pow(Math.sin(angle), 3) * (speed / 10);
@@ -92,16 +91,12 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalCompositeOperation = 'lighter';
 
-    // Update fireworks
     let fIdx = fireworksRef.current.length;
     while (fIdx--) {
       const f = fireworksRef.current[fIdx];
-      
       f.speed *= f.acceleration;
       const vx = Math.cos(f.angle) * f.speed;
       const vy = Math.sin(f.angle) * f.speed;
-      f.distanceTraveled = calculateDistance(f.x + vx, f.y + vy, f.targetX, f.targetY);
-
       f.x += vx;
       f.y += vy;
 
@@ -112,13 +107,12 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      if (f.y <= f.targetY || Math.abs(f.x - f.targetX) < 10) {
+      if (f.y <= f.targetY) {
         createParticles(f.x, f.y, f.color);
         fireworksRef.current.splice(fIdx, 1);
       }
     }
 
-    // Update particles
     let pIdx = particlesRef.current.length;
     while (pIdx--) {
       const p = particlesRef.current[pIdx];
@@ -148,9 +142,7 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
   }, [createFirework, createParticles, theme.launchFrequency]);
 
   const loop = useCallback(() => {
-    if (!isPaused) {
-      update();
-    }
+    if (!isPaused) update();
     frameIdRef.current = requestAnimationFrame(loop);
   }, [update, isPaused]);
 
@@ -161,14 +153,12 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
         canvasRef.current.height = window.innerHeight;
       }
     };
-
     window.addEventListener('resize', handleResize);
     handleResize();
     frameIdRef.current = requestAnimationFrame(loop);
-
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (frameIdRef.current !== undefined) cancelAnimationFrame(frameIdRef.current);
+      if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
     };
   }, [loop]);
 
@@ -179,11 +169,9 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
     const y = canvas.height;
     const targetX = e.clientX;
     const targetY = e.clientY;
-    const distance = calculateDistance(x, y, targetX, targetY);
-    
     fireworksRef.current.push({
       x, y, targetX, targetY,
-      distanceToTarget: distance,
+      distanceToTarget: calculateDistance(x, y, targetX, targetY),
       distanceTraveled: 0,
       coordinates: [],
       coordinateCount: 3,
@@ -196,13 +184,7 @@ const FireworkEngine: React.FC<FireworkEngineProps> = ({ theme, isPaused, onExpl
     });
   };
 
-  return (
-    <canvas 
-      ref={canvasRef} 
-      className="fixed inset-0 cursor-crosshair"
-      onClick={handleManualLaunch}
-    />
-  );
+  return <canvas ref={canvasRef} className="fixed inset-0 cursor-crosshair" onClick={handleManualLaunch} />;
 };
 
 export default FireworkEngine;

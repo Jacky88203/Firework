@@ -1,8 +1,8 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
-import FireworkEngine from './components/FireworkEngine';
-import { generateShowTheme } from './services/geminiService';
-import { ShowTheme, AppStatus } from './types';
+import FireworkEngine from './components/FireworkEngine.tsx';
+import { generateShowTheme } from './services/geminiService.ts';
+import { ShowTheme, AppStatus } from './types.ts';
 import { Sparkles, Play, Pause, RefreshCw, Info, Sliders, Palette, Zap, Box, X } from 'lucide-react';
 
 const DEFAULT_THEME: ShowTheme = {
@@ -33,7 +33,6 @@ const App: React.FC = () => {
       setTheme(newTheme);
       setStatus(AppStatus.SHOW_ACTIVE);
       setPrompt("");
-      // Briefly show the status then fade
       setTimeout(() => setStatus(AppStatus.IDLE), 3000);
     } catch (error) {
       console.error("Error creating show:", error);
@@ -63,13 +62,11 @@ const App: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen bg-slate-950 text-white overflow-hidden selection:bg-purple-500/30">
-      {/* Background Firework Engine */}
       <FireworkEngine 
         theme={theme} 
         isPaused={isPaused} 
       />
 
-      {/* Top HUD */}
       <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
         <div className="flex flex-col gap-1 pointer-events-auto">
           <div className="flex items-center gap-2">
@@ -105,7 +102,6 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Lab Sidebar */}
       <div className={`absolute top-0 right-0 h-full w-80 bg-slate-900/90 backdrop-blur-2xl border-l border-white/10 transition-transform duration-500 z-40 p-6 overflow-y-auto ${showLab ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-xl font-black italic flex items-center gap-2">
@@ -118,7 +114,6 @@ const App: React.FC = () => {
         </div>
 
         <div className="space-y-8">
-          {/* Colors Section */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 tracking-widest uppercase mb-4 flex items-center gap-2">
               <Palette size={14} /> Palette
@@ -149,7 +144,6 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Patterns Section */}
           <section>
             <h3 className="text-xs font-bold text-slate-500 tracking-widest uppercase mb-4 flex items-center gap-2">
               <Box size={14} /> Pattern
@@ -167,7 +161,6 @@ const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Sliders Section */}
           <section className="space-y-6">
             <div>
               <div className="flex justify-between items-center mb-3">
@@ -220,12 +213,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Control Panel */}
       <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-xl px-6 transition-all duration-500 ${showLab ? 'opacity-30 blur-sm pointer-events-none' : 'opacity-100 blur-0'}`}>
-        <form 
-          onSubmit={handleGenerateTheme}
-          className="relative group"
-        >
+        <form onSubmit={handleGenerateTheme} className="relative group">
           <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
           <div className="relative bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex items-center shadow-2xl">
             <input 
@@ -242,30 +231,15 @@ const App: React.FC = () => {
               className="px-6 py-3 bg-white text-slate-950 rounded-xl font-bold text-sm hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 whitespace-nowrap"
             >
               {status === AppStatus.GENERATING_THEME ? (
-                <>
-                  <RefreshCw className="animate-spin" size={18} />
-                  DREAMING...
-                </>
+                <><RefreshCw className="animate-spin" size={18} /> DREAMING...</>
               ) : (
-                <>
-                  <Sparkles size={18} />
-                  AI DESIGN
-                </>
+                <><Sparkles size={18} /> AI DESIGN</>
               )}
             </button>
           </div>
         </form>
-        
-        <div className="mt-4 flex justify-center items-center gap-4 text-[10px] text-slate-500 uppercase tracking-widest font-medium">
-          <span className="flex items-center gap-1"><Zap size={10} className="text-yellow-500" /> Tap to Launch</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700" />
-          <span className="flex items-center gap-1"><Palette size={10} className="text-purple-500" /> Custom Lab</span>
-          <span className="w-1 h-1 rounded-full bg-slate-700" />
-          <span className="flex items-center gap-1"><Sparkles size={10} className="text-pink-500" /> Gemini AI</span>
-        </div>
       </div>
 
-      {/* Info Overlay */}
       {showInfo && (
         <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-6 z-50">
           <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 max-w-md w-full shadow-2xl">
@@ -273,20 +247,7 @@ const App: React.FC = () => {
               <Sparkles className="text-pink-500" fill="currentColor" /> SYMPHONY GUIDE
             </h2>
             <div className="space-y-4 text-slate-400 text-sm leading-relaxed">
-              <p>
-                Celestial Symphony is an interactive canvas where physics meets imagination. 
-                Our engine simulates particle velocity, gravity, and fluid air drag to create realistic pyrotechnics.
-              </p>
-              <div className="grid grid-cols-2 gap-3 mt-6">
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <h4 className="text-white font-bold mb-1 text-xs">AI DESIGN</h4>
-                  <p className="text-[11px]">Tell Gemini a mood and let it curate the physics and palette.</p>
-                </div>
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                  <h4 className="text-white font-bold mb-1 text-xs">LAB MODE</h4>
-                  <p className="text-[11px]">Open the Sliders panel to manually fine-tune your display.</p>
-                </div>
-              </div>
+              <p>Celestial Symphony is an interactive canvas where physics meets imagination.</p>
               <p className="text-xs bg-purple-500/10 p-3 rounded-lg border border-purple-500/20 text-purple-300">
                 PRO TIP: Click anywhere on the dark sky to launch a manual shell at that exact location.
               </p>
@@ -298,15 +259,6 @@ const App: React.FC = () => {
               ENTER THE SKY
             </button>
           </div>
-        </div>
-      )}
-
-      {/* Status Alert */}
-      {status === AppStatus.SHOW_ACTIVE && (
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 bg-white/10 backdrop-blur-xl border border-white/20 px-6 py-2 rounded-full animate-in fade-in slide-in-from-top-4 duration-500 pointer-events-none">
-          <span className="text-xs font-bold tracking-widest text-purple-300">
-            NEW THEME CURATED: {theme.name.toUpperCase()}
-          </span>
         </div>
       )}
     </div>

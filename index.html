@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <!-- Babel Standalone: Allows the browser to run .tsx files directly -->
+    <!-- Babel Standalone: Essential for running TSX in browser without a build step -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
@@ -39,17 +39,20 @@
 
     <script>
         // Deployment Shim: Browsers don't have 'process.env'. 
-        // When deploying to Linode, you can hardcode your key here or set it via your server.
+        // For GitHub Pages/Linode, replace the string below with your actual API key.
         window.process = {
             env: {
-                API_KEY: "YOUR_GEMINI_API_KEY_HERE" // REPLACE THIS with your key for Linode
+                API_KEY: "YOUR_GEMINI_API_KEY_HERE"
             }
         };
     </script>
 </head>
 <body>
     <div id="root"></div>
-    <!-- Explicitly load the entry point using Babel -->
-    <script type="text/babel" data-type="module" src="./index.tsx"></script>
+    <!-- 
+      data-presets="react,typescript" is CRITICAL for Babel to understand your files.
+      data-type="module" allows using standard ES6 imports inside the TSX.
+    -->
+    <script type="text/babel" data-presets="react,typescript" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
