@@ -7,6 +7,10 @@
     <title>Celestial Fireworks Symphony</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Babel Standalone: Allows the browser to run .tsx files directly -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -19,19 +23,33 @@
             display: block;
         }
     </style>
-<script type="importmap">
+
+    <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "@google/genai": "https://esm.sh/@google/genai@1.34.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.474.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+    "react/": "https://esm.sh/react@^19.2.3/"
   }
 }
 </script>
+
+    <script>
+        // Deployment Shim: Browsers don't have 'process.env'. 
+        // When deploying to Linode, you can hardcode your key here or set it via your server.
+        window.process = {
+            env: {
+                API_KEY: "YOUR_GEMINI_API_KEY_HERE" // REPLACE THIS with your key for Linode
+            }
+        };
+    </script>
 </head>
 <body>
     <div id="root"></div>
+    <!-- Explicitly load the entry point using Babel -->
+    <script type="text/babel" data-type="module" src="./index.tsx"></script>
 </body>
 </html>
